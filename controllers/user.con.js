@@ -28,8 +28,17 @@ const signupController = async (req, res) => {
     }
 
 }
-const loginController = (req, res) => {
-
+const loginController = async (req, res) => {
+    const user = await UserModel.findOne({ email: req.body.email })
+    if (user) {
+        if (user.password == req.body.password) {
+            res.send(user)
+        } else {
+            res.send({ message: "Password is incorrect!!!" })
+        }
+    } else {
+        res.send({ message: "User does not exists!!!" })
+    }
 }
 
 module.exports = { signupController, loginController }

@@ -47,8 +47,10 @@ app.use(cors({
     origin: "*"
 }))
 
-const {signupRoute} = require("./routes/signup.route")
+const { signupRoute } = require("./routes/signup.route")
+const { loginRoute } = require("./routes/login.route")
 app.use('/signup', signupRoute)
+app.use('/login', loginRoute)
 
 
 
