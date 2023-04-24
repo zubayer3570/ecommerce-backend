@@ -1,16 +1,32 @@
-const { UserModel } = require("../schemas/User.model")
-
+const { UserModel } = require("../models/User.model")
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+    cloud_name: "da6qlanq1",
+    api_key: "855239541721646",
+    api_secret: "47BYqZca9ceCBRUwmZ1MjQlO_0o",
+    secure: true
+})
 const signupController = async (req, res) => {
-    const data = req.body
-    const newUser = new UserModel({
-        name: "zubayer",
-        email: "zubayer3570@gmail.com",
-        proPic: "https://thumbs.dreamstime.com/b/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg",
-        password: "1111111",
-        verified: true
-    })
-    const insertedUser = await newUser.save()
-    res.send(insertedUser)
+    try {
+        const userExists = await UserModel.findOne({ email: req.body.email })
+        if (userExists) {
+            res.send(userExists)
+            return;
+        }
+        const cloudinaryResponse = await cloudinary.uploader.upload("./uploaded/" + req.file.filename, { resource_type: "image", use_filename: true })
+        const newUser = new UserModel({
+            name: req.body.name,
+            email: req.body.email,
+            proPic: cloudinaryResponse.url.split("upload/").join("upload/q_10/"),
+            password: req.body.password,
+            verified: true
+        })
+        const insertedUser = await newUser.save()
+        res.send(insertedUser)
+    } catch (error) {
+        console.log(res)
+    }
+
 }
 const loginController = (req, res) => {
 

@@ -65,9 +65,6 @@ app.post("/create-payment-intent", async (req, res) => {
         amount: calculateAmount(data),
         currency: "usd",
         payment_method_types: ["card"]
-        // automatic_payment_methods: {
-        //     enabled: true
-        // }
     })
     res.send({
         client_secret: paymentIntent.client_secret

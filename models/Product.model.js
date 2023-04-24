@@ -5,6 +5,6 @@ const productSchema = new Schema({
     thumbnail: String,
     images: Array,
     description: String
-})
+}, { timestamps: true })
 
 export const ProductModel = mongoose.model("product", productSchema)
