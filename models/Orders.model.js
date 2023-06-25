@@ -1,12 +1,17 @@
 const { Schema, default: mongoose } = require("mongoose")
 
 const orderSchema = new Schema({
+    email: String,
     orderedProductID: String,
+    productData: Object,
     quantity: String,
     totalAmount: Number,
     paid: Boolean,
     orderDate: String,
-    shipping: String
+    shippingStatus: String
 }, { timestamps: true })
 
-export const OrderModel = mongoose.model("order", orderSchema)
+const OrderModel = mongoose.model("order", orderSchema)
+module.exports = {
+    OrderModel
+}

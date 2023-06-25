@@ -6,7 +6,8 @@ const userSchema = new Schema({
     email: String,
     proPic: String,
     password: String,
-    verified: Boolean
+    verified: Boolean,
+    admin: Boolean
 }, { timestamps: true })
 
 const UserModel = mongoose.model("user", userSchema)

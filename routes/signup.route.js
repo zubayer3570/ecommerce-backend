@@ -1,4 +1,6 @@
 const { signupController } = require("../controllers/user.con")
+
+// **********image upload*****************
 const multer = require("multer")
 const path = require("path")
 const storage = multer.diskStorage({
@@ -16,6 +18,7 @@ const storage = multer.diskStorage({
     }
 })
 const upload = multer({ storage })
+// ***************************************
 
 const router = require("express").Router()
 const signupRoute = router.post('/', upload.single("profilePic"), signupController)

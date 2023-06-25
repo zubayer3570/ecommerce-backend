@@ -7,4 +7,6 @@ const productSchema = new Schema({
     description: String
 }, { timestamps: true })
 
-export const ProductModel = mongoose.model("product", productSchema)
+const ProductModel = mongoose.model("product", productSchema)
+
+module.exports = {ProductModel}

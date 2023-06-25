@@ -31,53 +31,12 @@ const productData = [
     { "id": 30, "title": "Key Holder", "description": "Attractive DesignMetallic materialFour key hooksReliable & DurablePremium Quality", "price": 30, "discountPercentage": 2.92, "rating": 4.92, "stock": 54, "brand": "Golden", "category": "home-decoration", "thumbnail": "https://i.dummyjson.com/data/products/30/thumbnail.jpg", "images": ["https://i.dummyjson.com/data/products/30/1.jpg", "https://i.dummyjson.com/data/products/30/2.jpg", "https://i.dummyjson.com/data/products/30/3.jpg", "https://i.dummyjson.com/data/products/30/thumbnail.jpg"] }
 ]
 
+const calculateAmount = (data) => {
+    const product = productData.find(product => product.id == data.productData.id)
+    const total = product.price * data.quantity * 100
+    return total
+}
 
-
-const { calculateAmount } = require("./calculateAmount")
-const express = require("express")
-const app = express()
-const cors = require("cors")
-require("dotenv").config()
-const stripe = require("stripe")(process.env.SECRET_KEY)
-const mongoose = require("mongoose")
-mongoose.connect("mongodb+srv://database-user-1:databaseofzubayer@cluster0.1f3iy.mongodb.net/e-commerce")
-
-app.use(express.json())
-app.use(cors({
-    origin: "*"
-}))
-
-const { signupRoute } = require("./routes/signup.route")
-const { loginRoute } = require("./routes/login.route")
-const { addMyOrderRoute } = require("./routes/addMyOrder.route")
-const { getMyOrdersRoute } = require("./routes/getMyOrders.route")
-app.use('/signup', signupRoute)
-app.use('/login', loginRoute)
-app.use('/my-orders', getMyOrdersRoute)
-app.use('/add-order', addMyOrderRoute)
-
-// const calculateAmount = (data) => {
-//     const product = productData.find(product => product.id == data.productData.id)
-//     const total = product.price * data.quantity * 100
-//     return total
-// }
-
-app.post("/create-payment-intent", async (req, res) => {
-    const data = req.body
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: calculateAmount(data),
-        currency: "usd",
-        payment_method_types: ["card"]
-    })
-    res.send({
-        client_secret: paymentIntent.client_secret
-    })
-})
-
-
-app.get("/my-orders", (req, res) => {
-    res.send({ productData })
-})
-
-
-app.listen(5000)
+module.exports = {
+    calculateAmount
+}
