@@ -10,9 +10,14 @@ const signupController = async (req, res) => {
     try {
         const userExists = await UserModel.findOne({ email: req.body.email })
         if (userExists) {
-            res.send(userExists)
+            res.send({message: "User Already Exists!"})
             return;
         }
+        if(req.file){
+            res.send({message: "Upload Picture!"})
+            return;
+        }
+
         const cloudinaryResponse = await cloudinary.uploader.upload("./uploaded/" + req.file.filename, { resource_type: "image", use_filename: true })
         const newUser = new UserModel({
             name: req.body.name,

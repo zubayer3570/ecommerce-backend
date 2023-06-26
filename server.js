@@ -51,10 +51,12 @@ const { signupRoute } = require("./routes/signup.route")
 const { loginRoute } = require("./routes/login.route")
 const { addMyOrderRoute } = require("./routes/addMyOrder.route")
 const { getMyOrdersRoute } = require("./routes/getMyOrders.route")
+const { cancelOrderRoute } = require("./routes/cancelOrder.route")
 app.use('/signup', signupRoute)
 app.use('/login', loginRoute)
 app.use('/my-orders', getMyOrdersRoute)
 app.use('/add-order', addMyOrderRoute)
+app.use('/cancel-order', cancelOrderRoute)
 
 // const calculateAmount = (data) => {
 //     const product = productData.find(product => product.id == data.productData.id)
@@ -62,12 +64,20 @@ app.use('/add-order', addMyOrderRoute)
 //     return total
 // }
 
+
+app.post("/search", async (req, res)=>{
+    const {searchWord} = req.body
+    const serachResults = productData.filter(product=> product.title.split(" ")[0].includes(searchWord))
+    console.log(serachResults)
+    res.send({serachResults})
+})
+
 app.post("/create-payment-intent", async (req, res) => {
     const data = req.body
     const paymentIntent = await stripe.paymentIntents.create({
         amount: calculateAmount(data),
         currency: "usd",
-        payment_method_types: ["card"]
+        payment_method_types: ["card"],
     })
     res.send({
         client_secret: paymentIntent.client_secret

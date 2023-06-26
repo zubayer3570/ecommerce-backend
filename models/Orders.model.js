@@ -6,7 +6,6 @@ const orderSchema = new Schema({
     productData: Object,
     quantity: String,
     totalAmount: Number,
-    paid: Boolean,
     orderDate: String,
     shippingStatus: String
 }, { timestamps: true })
