@@ -13,7 +13,7 @@ const signupController = async (req, res) => {
             res.send({message: "User Already Exists!"})
             return;
         }
-        if(req.file){
+        if(!req.file){
             res.send({message: "Upload Picture!"})
             return;
         }
@@ -24,6 +24,7 @@ const signupController = async (req, res) => {
             email: req.body.email,
             proPic: cloudinaryResponse.url.split("upload/").join("upload/q_10/"),
             password: req.body.password,
+            admin: false,
             verified: true
         })
         const insertedUser = await newUser.save()
@@ -46,4 +47,9 @@ const loginController = async (req, res) => {
     }
 }
 
-module.exports = { signupController, loginController }
+const allUsersController = async (req, res)=>{
+    const allUser = UserModel.find({})
+    res.send(allUser)
+}
+
+module.exports = { signupController, loginController, allUsersController }

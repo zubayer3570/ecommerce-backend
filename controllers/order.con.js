@@ -8,12 +8,13 @@ const getMyOrdersController = async (req, res) => {
 }
 const addMyOrderController = async (req, res) => {
     const data = req.body
+    const date = new Date()
     const newOrder = new OrderModel({
         email: data.email,
         productData: data.productData,
         quantity: data.quantity,
         totalAmount: calculateAmount(data),
-        orderDate: new Date().getDate(),
+        orderDate: date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear(),
         shippingStatus: "Order Taken"
     })
     const newOrderSaved = await newOrder.save()
@@ -25,8 +26,26 @@ const cancelOrderController = async (req, res) => {
     res.send(result)
 }
 
+const allOrdersController = async (req, res) => {
+    const allOrders = await OrderModel.find({})
+    res.send({ allOrders })
+}
+const fetchOrderController = async (req, res) => {
+    const { orderID } = req.params
+    const selectedOrder = await OrderModel.findOne({ _id: orderID })
+    res.send(selectedOrder)
+}
+const updateOrderStatusController = async (req, res) => {
+    const { orderID, text } = req.body
+    await OrderModel.findOneAndUpdate({ _id: orderID }, {shippingStatus: text})
+    res.send({ message: "Updated!" })
+}
+
 module.exports = {
     getMyOrdersController,
     addMyOrderController,
-    cancelOrderController
+    cancelOrderController,
+    allOrdersController,
+    fetchOrderController,
+    updateOrderStatusController
 }
