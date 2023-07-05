@@ -8,14 +8,28 @@ cloudinary.config({
     secure: true
 })
 
-const fetchProductController = async (req, res)=>{
-    const {productID} = req.params
-    const productData = await ProductModel.findOne({_id: productID})
-    res.send(productData)
-}
-const fetchAllProductController = async (req, res)=>{
-    const allProducts = await ProductModel.find({})
-    res.send({allProducts})
+
+const addProductController = async (req, res) => {
+    const { title, description, price } = req.body
+    const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
+    const data = {
+        title, description, price,
+        image: cloudinaryResponse.url
+    }
+    const newProduct = new ProductModel(data)
+    const response = await newProduct.save()
+    res.send(response)
 }
 
-module.exports = { fetchProductController, fetchAllProductController }
+
+const fetchProductController = async (req, res) => {
+    const { productID } = req.params
+    const productData = await ProductModel.findOne({ _id: productID })
+    res.send(productData)
+}
+const fetchAllProductController = async (req, res) => {
+    const allProducts = await ProductModel.find({})
+    res.send({ allProducts })
+}
+
+module.exports = { fetchProductController, fetchAllProductController, addProductController }

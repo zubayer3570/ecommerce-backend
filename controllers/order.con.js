@@ -1,5 +1,5 @@
 const { OrderModel } = require("../models/Orders.model")
-const { calculateAmount } = require("../calculateAmount")
+const { ProductModel } = require("../models/Product.model")
 
 const getMyOrdersController = async (req, res) => {
     const { email } = req.body
@@ -9,11 +9,13 @@ const getMyOrdersController = async (req, res) => {
 const addMyOrderController = async (req, res) => {
     const data = req.body
     const date = new Date()
+    const product = await ProductModel.findOne({ _id: data.productData._id })
+    const totalAmount = product.price * data.quantity * 100
     const newOrder = new OrderModel({
         email: data.email,
         productData: data.productData,
         quantity: data.quantity,
-        totalAmount: calculateAmount(data),
+        totalAmount,
         orderDate: date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear(),
         shippingStatus: "Order Taken"
     })
@@ -37,8 +39,8 @@ const fetchOrderController = async (req, res) => {
 }
 const updateOrderStatusController = async (req, res) => {
     const { orderID, text } = req.body
-    await OrderModel.findOneAndUpdate({ _id: orderID }, {shippingStatus: text})
-    res.send({ message: "Updated!" })
+    const updatedOrder = await OrderModel.findOneAndUpdate({ _id: orderID }, { shippingStatus: text }, {new: true})
+    res.send(updatedOrder)
 }
 
 module.exports = {

@@ -58,6 +58,8 @@ const { fetchAllProductRoute } = require("./routes/fetchAllProduct.route")
 const { fetchProductRoute } = require("./routes/fetchProduct.route")
 const { fetchOrderRoute } = require("./routes/fetchOrder.route")
 const { updateOrderStatusRoute } = require("./routes/updateOrderStatus.route")
+const { ProductModel } = require("./models/Product.model")
+const { addProductRoute } = require("./routes/addProduct.route")
 app.use('/signup', signupRoute)
 app.use('/login', loginRoute)
 app.use('/my-orders', getMyOrdersRoute)
@@ -65,6 +67,7 @@ app.use('/add-order', addMyOrderRoute)
 app.use('/cancel-order', cancelOrderRoute)
 app.use('/all-orders', allOrdersRoute)
 app.use('/all-users', allUsersRoute)
+app.use('/add-product', addProductRoute)
 app.use('/fetch-product', fetchProductRoute)
 app.use('/all-products', fetchAllProductRoute)
 app.use('/fetch-order', fetchOrderRoute)
@@ -77,23 +80,29 @@ app.use('/update-order-status', updateOrderStatusRoute)
 // }
 
 
-app.post("/search", async (req, res)=>{
-    const {searchWord} = req.body
-    const serachResults = productData.filter(product=> product.title.split(" ")[0].includes(searchWord))
+app.post("/search", async (req, res) => {
+    const { searchWord } = req.body
+    const serachResults = productData.filter(product => product.title.split(" ")[0].includes(searchWord))
     console.log(serachResults)
-    res.send({serachResults})
+    res.send({ serachResults })
 })
 
 app.post("/create-payment-intent", async (req, res) => {
-    const data = req.body
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: calculateAmount(data),
-        currency: "usd",
-        payment_method_types: ["card"],
-    })
-    res.send({
-        client_secret: paymentIntent.client_secret
-    })
+    try {
+        const data = req.body
+        const product = await ProductModel.findOne({ _id: data.productData._id })
+        const amount = product.price * data.quantity * 100
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount,
+            currency: "usd",
+            payment_method_types: ["card"],
+        })
+        res.send({
+            client_secret: paymentIntent.client_secret
+        })
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 
