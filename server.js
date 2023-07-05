@@ -106,9 +106,12 @@ app.post("/create-payment-intent", async (req, res) => {
 })
 
 
-app.get("/my-orders", (req, res) => {
-    res.send({ productData })
-})
+// app.get("/my-orders", (req, res) => {
+//     res.send({ productData })
+// })
 
+app.get("/", (req, res) => {
+    res.send("Server is running Properly!")
+})
 
 app.listen(5000)
