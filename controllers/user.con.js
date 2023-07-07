@@ -2,7 +2,7 @@ const fs = require("fs")
 require("dotenv").config()
 const jwt = require("jsonwebtoken")
 const { UserModel } = require("../models/User.model");
-const { VisitorModel } = require("../models/visitor.model");
+const { VisitorModel } = require("../models/Visitor.model");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
     cloud_name: "da6qlanq1",
@@ -36,6 +36,7 @@ const signupController = async (req, res) => {
 const loginController = async (req, res) => {
     const newVisitor = new VisitorModel({ ip: req.ip.split("f:")[1] })
     await newVisitor.save()
+    
     if (!req.body.email) {
         res.send({})
         return;
