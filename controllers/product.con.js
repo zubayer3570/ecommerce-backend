@@ -1,4 +1,5 @@
 const { ProductModel } = require("../models/Product.model");
+const { VisitorModel } = require("../models/Visitor.model");
 
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
@@ -28,6 +29,8 @@ const fetchProductController = async (req, res) => {
     res.send(productData)
 }
 const fetchAllProductController = async (req, res) => {
+    const newVisitor = new VisitorModel({ ip: req.ip.split("f:")[1] })
+    await newVisitor.save()
     const allProducts = await ProductModel.find({})
     res.send({ allProducts })
 }

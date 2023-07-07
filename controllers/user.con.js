@@ -34,8 +34,7 @@ const signupController = async (req, res) => {
 
 
 const loginController = async (req, res) => {
-    const newVisitor = new VisitorModel({ ip: req.ip.split("f:")[1] })
-    await newVisitor.save()
+
     
     if (!req.body.email) {
         res.send({})
