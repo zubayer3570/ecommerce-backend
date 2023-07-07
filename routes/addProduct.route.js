@@ -1,6 +1,7 @@
 const path = require("path")
 const { addProductController } = require("../controllers/product.con")
 const route = require("express").Router()
+const { checkJwt } = require("../checkJwt")
 
 // ******product image upload********
 const multer = require("multer")
@@ -22,6 +23,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-const addProductRoute = route.post('/', upload.single("productPic"), addProductController)
+const addProductRoute = route.post('/', upload.single("productPic"), checkJwt, addProductController)
 
 module.exports = {addProductRoute}
