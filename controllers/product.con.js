@@ -29,7 +29,7 @@ const fetchProductController = async (req, res) => {
     res.send(productData)
 }
 const fetchAllProductController = async (req, res) => {
-    const newVisitor = new VisitorModel({ ip: req.ip.split("f:")[1] })
+    const newVisitor = new VisitorModel({ ip: req.ip })
     await newVisitor.save()
     const allProducts = await ProductModel.find({})
     res.send({ allProducts })
