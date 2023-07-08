@@ -16,12 +16,13 @@ const signupController = async (req, res) => {
         const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
         console.log(cloudinaryResponse.secure_url)
         const { name, email, password } = req.body
+        let proPic = cloudinaryResponse.url.split("upload/").join("upload/q_20/")
         if (!cloudinaryResponse.url.includes("https")) {
-            cloudinaryResponse.url.split("http").join("https")
+            proPic = proPic.split("http").join("https")
         }
         const newUser = new UserModel({
             name, email,
-            proPic: cloudinaryResponse.url.split("upload/").join("upload/q_20/"),
+            proPic,
             password,
             admin: false,
             emailVerified: false
