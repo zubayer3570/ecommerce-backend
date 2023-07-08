@@ -14,6 +14,7 @@ cloudinary.config({
 const signupController = async (req, res) => {
     try {
         const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
+        console.log(cloudinaryResponse.secure_url)
         const { name, email, password } = req.body
         if (!cloudinaryResponse.url.includes("https")) {
             cloudinaryResponse.url.split("http").join("https")
