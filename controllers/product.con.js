@@ -17,8 +17,7 @@ const addProductController = async (req, res) => {
         image = cloudinaryResponse.url.split("http").join("https")
     }
     const data = {
-        title, description, price,
-        image: cloudinaryResponse.secure_url
+        title, description, price, image
     }
     const newProduct = new ProductModel(data)
     const response = await newProduct.save()
