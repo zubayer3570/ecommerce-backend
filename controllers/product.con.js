@@ -10,29 +10,40 @@ cloudinary.config({
 
 
 const addProductController = async (req, res) => {
-    const { title, description, price } = req.body
-    const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
-    if (!cloudinaryResponse.url.includes("https")) {
-        cloudinaryResponse.url.split("http").join("https")
+    try {
+        const { title, description, price } = req.body
+        const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
+        if (!cloudinaryResponse.url.includes("https")) {
+            cloudinaryResponse.url.split("http").join("https")
+        }
+        const data = {
+            title, description, price, image: cloudinaryResponse.url
+        }
+        const newProduct = new ProductModel(data)
+        const response = await newProduct.save()
+        res.send(response)
+    } catch (error) {
+
     }
-    const data = {
-        title, description, price, image: cloudinaryResponse.url
-    }
-    const newProduct = new ProductModel(data)
-    const response = await newProduct.save()
-    res.send(response)
 }
 
 
 const fetchProductController = async (req, res) => {
-    const { productID } = req.params
-    const productData = await ProductModel.findOne({ _id: productID })
-    res.send(productData)
+    try {
+        const { productID } = req.params
+        const productData = await ProductModel.findOne({ _id: productID })
+        res.send(productData)
+    } catch (error) {
+
+    }
 }
 const fetchAllProductController = async (req, res) => {
-    console.log("hi")
-    const allProducts = await ProductModel.find({})
-    res.send({ allProducts })
+    try {
+        const allProducts = await ProductModel.find({})
+        res.send({ allProducts })
+    } catch (error) {
+
+    }
 }
 
 module.exports = { fetchProductController, fetchAllProductController, addProductController }

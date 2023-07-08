@@ -28,7 +28,7 @@ const signupController = async (req, res) => {
             emailVerified: false
         })
         const insertedUser = await newUser.save()
-        const jwtRes = jwt.sign({ user: insertedUser }, "hello", { expiresIn: "1h" })
+        const jwtRes = jwt.sign({ user: insertedUser }, process.env.SECRECT_KEY_JWT, { expiresIn: "1h" })
         insertedUser._doc.jwt = jwtRes
         res.send(insertedUser)
     } catch (error) {
@@ -39,32 +39,40 @@ const signupController = async (req, res) => {
 
 
 const loginController = async (req, res) => {
-    if (!req.body.email) {
-        res.send({})
-        return;
-    }
-    let user = await UserModel.findOne({ email: req.body.email })
-    if (!user) {
-        if (req.body.loginMethod) {
-            const { name, email, proPic } = req.body
-            const newUser = new UserModel({
-                name, email, proPic,
-                admin: false,
-                emailVerified: true
-            })
-            user = await newUser.save()
+    try {
+        if (!req.body.email) {
+            res.send({})
+            return;
         }
+        let user = await UserModel.findOne({ email: req.body.email })
+        if (!user) {
+            if (req.body.loginMethod) {
+                const { name, email, proPic } = req.body
+                const newUser = new UserModel({
+                    name, email, proPic,
+                    admin: false,
+                    emailVerified: true
+                })
+                user = await newUser.save()
+            }
+        }
+        if (user) {
+            const jwtRes = jwt.sign({ user }, process.env.SECRET_KEY_JWT, { expiresIn: "1h" })
+            user._doc.jwt = jwtRes
+        }
+        res.send(user)
+    } catch (error) {
+
     }
-    if (user) {
-        const jwtRes = jwt.sign({ user }, process.env.SECRET_KEY_JWT, { expiresIn: "1h" })
-        user._doc.jwt = jwtRes
-    }
-    res.send(user)
 }
 
 const allUsersController = async (req, res) => {
-    const allUser = UserModel.find({})
-    res.send(allUser)
+    try {
+        const allUser = await UserModel.find({})
+        res.send(allUser)
+    } catch (error) {
+
+    }
 }
 
 module.exports = { signupController, loginController, allUsersController }
