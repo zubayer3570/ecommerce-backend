@@ -12,9 +12,12 @@ cloudinary.config({
 const addProductController = async (req, res) => {
     const { title, description, price } = req.body
     const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
+    if (!cloudinaryResponse.url.includes("https")) {
+        cloudinaryResponse.url.split("http").join("https")
+    }
     const data = {
         title, description, price,
-        image: cloudinaryResponse.url
+        image: cloudinaryResponse.secure_url
     }
     const newProduct = new ProductModel(data)
     const response = await newProduct.save()

@@ -13,7 +13,6 @@ cloudinary.config({
 
 const signupController = async (req, res) => {
     try {
-        // console.log("hi")
         const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
         const { name, email, password } = req.body
         const newUser = new UserModel({
