@@ -14,21 +14,16 @@ cloudinary.config({
 const signupController = async (req, res) => {
     try {
         const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
-        console.log(cloudinaryResponse.secure_url)
         const { name, email, password } = req.body
-        let proPic = cloudinaryResponse.url.split("upload/").join("upload/q_20/")
-        if (!cloudinaryResponse.url.includes("https")) {
-            proPic = proPic.split("http").join("https")
-        }
         const newUser = new UserModel({
             name, email,
-            proPic,
+            proPic: cloudinaryResponse.url,
             password,
             admin: false,
             emailVerified: false
         })
         const insertedUser = await newUser.save()
-        const jwtRes = jwt.sign({ user: insertedUser }, process.env.SECRECT_KEY_JWT, { expiresIn: "1h" })
+        const jwtRes = jwt.sign({ user: insertedUser }, process.env.SECRET_KEY_JWT, { expiresIn: "1h" })
         insertedUser._doc.jwt = jwtRes
         res.send(insertedUser)
     } catch (error) {
