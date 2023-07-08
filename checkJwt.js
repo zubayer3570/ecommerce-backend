@@ -6,6 +6,7 @@ const checkJwt = (req, res, next) => {
     if (jwt.verify(authorization, process.env.SECRET_KEY_JWT).user._id) {
         next()
     } else {
+        console.log("hi")
         res.send({ message: "JWT Token Incorrect!" })
     }
 }

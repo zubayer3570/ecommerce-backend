@@ -42,6 +42,7 @@ const cancelOrderController = async (req, res) => {
 
 const allOrdersController = async (req, res) => {
     try {
+        console.log("hi")
         const allOrders = await OrderModel.find({})
         res.send({ allOrders })
     } catch (error) {

@@ -1,7 +1,3 @@
-
-
-
-
 const { calculateAmount } = require("./calculateAmount")
 const express = require("express")
 const app = express()
