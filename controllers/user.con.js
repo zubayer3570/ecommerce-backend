@@ -13,6 +13,7 @@ cloudinary.config({
 
 const signupController = async (req, res) => {
     try {
+        // console.log("hi")
         const cloudinaryResponse = await cloudinary.uploader.upload("upload/" + req.file.filename, { resource_type: "image", use_filename: true })
         const { name, email, password } = req.body
         const newUser = new UserModel({
@@ -20,7 +21,7 @@ const signupController = async (req, res) => {
             proPic: cloudinaryResponse.url.split("upload/").join("upload/q_20/"),
             password,
             admin: false,
-            verified: true
+            emailVerified: false
         })
         const insertedUser = await newUser.save()
         const jwtRes = jwt.sign({ user: insertedUser }, "hello", { expiresIn: "1h" })
@@ -34,8 +35,6 @@ const signupController = async (req, res) => {
 
 
 const loginController = async (req, res) => {
-
-    
     if (!req.body.email) {
         res.send({})
         return;
@@ -47,13 +46,15 @@ const loginController = async (req, res) => {
             const newUser = new UserModel({
                 name, email, proPic,
                 admin: false,
-                verified: true
+                emailVerified: true
             })
             user = await newUser.save()
         }
     }
-    const jwtRes = jwt.sign({ user }, process.env.SECRET_KEY_JWT, { expiresIn: "1h" })
-    user._doc.jwt = jwtRes
+    if (user) {
+        const jwtRes = jwt.sign({ user }, process.env.SECRET_KEY_JWT, { expiresIn: "1h" })
+        user._doc.jwt = jwtRes
+    }
     res.send(user)
 }
 
