@@ -1,3 +1,5 @@
+const data = require("../data");
+
 const { ProductModel } = require("../models/Product.model");
 
 const cloudinary = require("cloudinary").v2;
@@ -23,7 +25,38 @@ const addProductController = async (req, res) => {
         const response = await newProduct.save()
         res.send(response)
     } catch (error) {
+        console.log(error);
+    }
+}
 
+
+const addallproduct = async (req, res) => {
+    try {
+        const response = await ProductModel.insertMany(data.products)
+        res.send(response)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const updateProductController = async (req, res) => {
+    try {
+        const { id, title, description, price } = req.body
+        const updatedProduct = await ProductModel.findOneAndUpdate({ _id: id }, { title, description, price }, { new: true })
+        res.send(updatedProduct)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteProductController = async (req, res) => {
+    try {
+        const { id } = req.body
+        const deletedProduct = await ProductModel.findOneAndDelete({ _id: id })
+        console.log(deletedProduct);
+        res.send(deletedProduct)
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -46,4 +79,10 @@ const fetchAllProductController = async (req, res) => {
     }
 }
 
-module.exports = { fetchProductController, fetchAllProductController, addProductController }
+module.exports = {
+    fetchProductController,
+    fetchAllProductController,
+    addProductController,
+    updateProductController,
+    deleteProductController
+}
