@@ -1,17 +1,12 @@
 const { Schema, default: mongoose } = require("mongoose")
 
 const orderSchema = new Schema({
+    name: String,
     email: String,
-    // productData: Object,
-    productData: {type: mongoose.Schema.Types.ObjectId, ref: 'product'},
-    quantity: String,
-    totalAmount: Number,
-    orderDate: String,
-    shippingStatus: String
+    message: String
 }, { timestamps: true })
 
 const OrderModel = mongoose.model("order", orderSchema)
 module.exports = {
     OrderModel
 }
-

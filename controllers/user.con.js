@@ -2,7 +2,6 @@ const fs = require("fs")
 require("dotenv").config()
 const jwt = require("jsonwebtoken")
 const { UserModel } = require("../models/User.model");
-const { VisitorModel } = require("../models/Visitor.model");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
     cloud_name: "da6qlanq1",
@@ -61,13 +60,72 @@ const loginController = async (req, res) => {
     }
 }
 
-const allUsersController = async (req, res) => {
+const userInformation = async (req, res) => {
     try {
-        const allUser = await UserModel.find({})
-        res.send(allUser)
+        console.log(req.body.userID);
+        const userInfo = await UserModel.findById(req.body.userID)
+        res.send({ userInfo })
     } catch (error) {
-
+        console.log(error)
     }
 }
 
-module.exports = { signupController, loginController, allUsersController }
+const allUsersController = async (req, res) => {
+    try {
+        console.log("hit all users controller");
+        const allUsers = await UserModel.find({})
+        res.send({ allUsers })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const updateUserController = async (req, res) => {
+    try {
+        const { id, title, description, price } = req.body
+        const updatedProduct = await ProductModel.findOneAndUpdate({ _id: id }, { title, description, price }, { new: true })
+        res.send(updatedProduct)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const makeAdminController = async (req, res) => {
+    try {
+        const { userID } = req.body
+        const newAdmin = await UserModel.findOneAndUpdate({ _id: userID }, { admin: true }, { new: true })
+        res.send({ newAdmin })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteUserController = async (req, res) => {
+    try {
+        const { userID } = req.body
+        const { authorization } = req.headers
+        const deleteReqForUser = await UserModel.findOne({ _id: userID })
+
+        const reqFromUserDecoded = jwt.decode(authorization).user
+        const reqFromUser = await UserModel.findOne({ _id: reqFromUserDecoded._id })
+
+
+        if (deleteReqForUser.admin === true) {
+            if (reqFromUser.createdAt.getTime() < deleteReqForUser.createdAt.getTime()) {
+                const deletedUser = await UserModel.findOneAndDelete({ _id: userID })
+                res.send({ deletedUser })
+            } else {
+                res.status(403).send({ message: "You don't have permission to delete this user!" })
+            }
+        } else {
+            const deletedUser = await UserModel.findOneAndDelete({ _id: userID })
+            res.send({ deletedUser })
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = { signupController, loginController, userInformation, allUsersController, deleteUserController, makeAdminController }

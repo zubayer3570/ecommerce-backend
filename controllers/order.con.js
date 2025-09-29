@@ -4,10 +4,10 @@ const { ProductModel } = require("../models/Product.model")
 const getMyOrdersController = async (req, res) => {
     try {
         const { email } = req.body
-        const myOrders = await OrderModel.find({ email })
+        const myOrders = await OrderModel.find({ email }).populate('productData')
         res.send(myOrders)
     } catch (error) {
-
+        console.log(error);
     }
 }
 const addMyOrderController = async (req, res) => {
@@ -42,7 +42,6 @@ const cancelOrderController = async (req, res) => {
 
 const allOrdersController = async (req, res) => {
     try {
-        console.log("hi")
         const allOrders = await OrderModel.find({})
         res.send({ allOrders })
     } catch (error) {
