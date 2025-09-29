@@ -24,7 +24,8 @@ const addMyOrderController = async (req, res) => {
             orderDate: date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear(),
             shippingStatus: "Order Taken"
         })
-        const newOrderSaved = await newOrder.save()
+        const newOrderSaved = await (await newOrder.save()).populate("productData")
+        console.log(newOrderSaved)
         res.send(newOrderSaved)
     } catch (error) {
 
