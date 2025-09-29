@@ -30,14 +30,15 @@ const addProductController = async (req, res) => {
 }
 
 
-const addallproduct = async (req, res) => {
-    try {
-        const response = await ProductModel.insertMany(data.products)
-        res.send(response)
-    } catch (error) {
-        console.log(error);
-    }
-}
+// const addallproduct = async (req, res) => {
+//     try {
+//         const response = await ProductModel.insertMany(data.products)
+//         res.send(response)
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 
 const updateProductController = async (req, res) => {
     try {

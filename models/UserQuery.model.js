@@ -6,7 +6,5 @@ const orderSchema = new Schema({
     message: String
 }, { timestamps: true })
 
-const OrderModel = mongoose.model("order", orderSchema)
-module.exports = {
-    OrderModel
-}
+const UserQueryModel = mongoose.model("userQuery", orderSchema)
+module.exports = { UserQueryModel }

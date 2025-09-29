@@ -42,7 +42,7 @@ const cancelOrderController = async (req, res) => {
 
 const allOrdersController = async (req, res) => {
     try {
-        const allOrders = await OrderModel.find({})
+        const allOrders = await OrderModel.find({}).populate('productData')
         res.send({ allOrders })
     } catch (error) {
 
@@ -51,7 +51,7 @@ const allOrdersController = async (req, res) => {
 const fetchOrderController = async (req, res) => {
     try {
         const { orderID } = req.params
-        const selectedOrder = await OrderModel.findOne({ _id: orderID })
+        const selectedOrder = await OrderModel.findOne({ _id: orderID }).populate('productData')
         res.send(selectedOrder)
     } catch (error) {
 
@@ -60,7 +60,7 @@ const fetchOrderController = async (req, res) => {
 const updateOrderStatusController = async (req, res) => {
     try {
         const { orderID, text } = req.body
-        const updatedOrder = await OrderModel.findOneAndUpdate({ _id: orderID }, { shippingStatus: text }, { new: true })
+        const updatedOrder = await OrderModel.findOneAndUpdate({ _id: orderID }, { shippingStatus: text }, { new: true }).populate("productData")
         res.send(updatedOrder)
     } catch (error) {
 

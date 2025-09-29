@@ -29,6 +29,10 @@ const { updateOrderStatusRoute } = require("./routes/updateOrderStatus.route")
 const { addProductRoute } = require("./routes/addProduct.route")
 const { updateProductRoute } = require("./routes/updateProduct.route")
 const { deleteProductRoute } = require("./routes/deleteProduct.route")
+const { addUserQueryRoute } = require("./routes/addUserQuery.route")
+const { allUserQueriesRoute } = require("./routes/allUserQueries.route")
+const { queryReplyRoute } = require("./routes/queryReply.route")
+const { deleteQueryRoute } = require("./routes/deleteQuery.route")
 const { ProductModel } = require("./models/Product.model")
 
 
@@ -49,6 +53,10 @@ app.use('/fetch-order', fetchOrderRoute)
 app.use('/update-order-status', updateOrderStatusRoute)
 app.use('/update-product', updateProductRoute)
 app.use('/delete-product', deleteProductRoute)
+app.use('/add-query', addUserQueryRoute)
+app.use('/all-user-queries', allUserQueriesRoute)
+app.use('/query-reply', queryReplyRoute)
+app.use('/delete-query', deleteQueryRoute)
 
 
 app.post("/search", async (req, res) => {
