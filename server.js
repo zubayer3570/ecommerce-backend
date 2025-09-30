@@ -69,7 +69,7 @@ app.post("/create-payment-intent", async (req, res) => {
     try {
         const data = req.body
         const product = await ProductModel.findOne({ _id: data.productData._id })
-        const amount = product.price * data.quantity * 100
+        const amount = product.price * data.quantity
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: "usd",
@@ -92,8 +92,13 @@ app.post("/create-payment-intent", async (req, res) => {
 // visitor count
 app.set('trust proxy', true)
 
-app.get("/", (req, res) => {
-    res.send("Server is running Properly!")
+app.get("/", async (req, res) => {
+
+    const data = await ProductModel.find({})
+    res.send({
+        message: "Server is running Properly!",
+        data: data
+    })
 })
 
 app.listen(5000)
